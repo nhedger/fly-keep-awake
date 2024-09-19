@@ -15,13 +15,13 @@ inputs:
     default: HEAD
 runs:
   using: composite
+  shell: bash
   steps:
     - name: Setup Fly CLI
       uses: superfly/flyctl-actions/setup-flyctl@1.5
 
     - name: Retrieve URLs of apps
       id: urls
-      shell: bash
       run: |
         # Prepare the list of app names for use in jq
         APPS=$(echo "${{ inputs.apps }}" | sed 's/[^,]\+/"&"/g')
