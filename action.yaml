@@ -29,8 +29,8 @@ runs:
         # Retrieve the URLs of the apps
         URLS=$(flyctl apps list --json | jq -r ".[] | select(.name == ($APPS)) | .url")
 
-        # Set the output variable
-        echo "::set-output name=urls::$URLS"
+        # Set output variable
+        echo "urls=$URLS" >> $GITHUB_OUTPUT
 
     - name: Wake up apps
       shell: bash
@@ -39,6 +39,7 @@ runs:
           echo "Waking up $url"
           curl \
             --request ${{ inputs.method }} \
+            --head
             --max-time ${{ inputs.timeout }} \
             --user-agent "Fly Keep Awake / https://github.com/nhedger/fly-keep-awake" \
             --verbose \
