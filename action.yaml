@@ -30,7 +30,9 @@ runs:
         URLS=$(flyctl apps list --json | jq -r ".[] | select(.name == ($APPS)) | .Hostname")
 
         # Set output variable
-        echo "urls=$URLS" >> $GITHUB_OUTPUT
+        echo "urls<<EOF" >> $GITHUB_OUTPUT
+        echo "$URLS" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
 
     - name: Wake up apps
       shell: bash
