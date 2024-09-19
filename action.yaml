@@ -26,10 +26,10 @@ runs:
         # Convert the comma-separated list of app names into a JSON array
         APPS=$(echo "${{ inputs.apps}}" | tr '\n' ',' | jq -R 'split(",") | map(select(length > 0))')
 
-        flyctl apps list --json | jq --argjson apps "$APPS" -r '.[] | select(.name == ($apps)) | .Hostname'
+        flyctl apps list --json | jq --argjson apps "$APPS" -r '.[] | select(.Name as $name | $apps | index($name)) | .Hostname'
 
         # Retrieve the URLs of the apps
-        URLS=$(flyctl apps list --json | jq --argjson apps "$APPS" -r '.[] | select(.name == ($apps)) | .Hostname')
+        URLS=$(flyctl apps list --json | jq --argjson apps "$APPS" -r '.[] | select(.Name as $name | $apps | index($name)) | .Hostname')
 
         echo $URLS
 
