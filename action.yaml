@@ -31,6 +31,8 @@ runs:
         # Retrieve the URLs of the apps
         URLS=$(flyctl apps list --json | jq -r ".[] | select(.name == ($APPS)) | .Hostname")
 
+        echo $URLS
+
         # Set output variable
         echo "urls<<EOF" >> $GITHUB_OUTPUT
         echo "$URLS" >> $GITHUB_OUTPUT
