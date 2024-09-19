@@ -12,7 +12,7 @@ inputs:
   http_method:
     description: The HTTP method to use to wake up the app
     required: false
-    default: HEAD
+    default: GET
 runs:
   using: composite
   steps:
