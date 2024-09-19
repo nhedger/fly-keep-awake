@@ -30,7 +30,7 @@ runs:
         URLS=$(flyctl apps list --json | jq --argjson apps "$APPS" -r '.[] | select(.Name as $name | $apps | index($name)) | .Hostname')
 
         # Set output variable
-        echo "urls=$(echo "$URLS" | tr '\n' ' ')" >> $GITHUB_OUTPUT
+        echo "urls=$(echo "$URLS" | tr '\n' ' ' | xargs)" >> $GITHUB_OUTPUT
       
     - name: Wake up apps
       shell: bash
