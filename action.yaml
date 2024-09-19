@@ -15,12 +15,12 @@ inputs:
     default: HEAD
 runs:
   using: composite
-  shell: bash
   steps:
     - name: Setup Fly CLI
       uses: superfly/flyctl-actions/setup-flyctl@1.5
 
     - name: Retrieve URLs of apps
+      shell: bash
       id: urls
       run: |
         # Prepare the list of app names for use in jq
@@ -33,6 +33,7 @@ runs:
         echo "::set-output name=urls::$URLS"
 
     - name: Wake up apps
+      shell: bash
       run: |
         for url in ${{ steps.urls.outputs.urls }}; do
           echo "Waking up $url"
