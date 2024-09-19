@@ -1,0 +1,46 @@
+name: Fly Keep Awake
+description: Keep auto-suspendable Fly.io apps awake on a schedule
+author: nhedger
+inputs:
+  apps:
+    description: A coma-separated list of names of Fly.io apps to keep awake
+    required: true
+  timeout:
+    description: The maximum number of seconds to wait for an app to wake up
+    required: false
+    default: 30
+  http_method:
+    description: The HTTP method to use to wake up the app
+    required: false
+    default: HEAD
+runs:
+  using: composite
+  steps:
+    - name: Setup Fly CLI
+      uses: superfly/flyctl-actions/setup-flyctl@1.5
+
+    - name: Retrieve URLs of apps
+      id: urls
+      shell: bash
+      run: |
+        # Prepare the list of app names for use in jq
+        APPS=$(echo "${{ inputs.apps }}" | sed 's/[^,]\+/"&"/g')
+
+        # Retrieve the URLs of the apps
+        URLS=$(flyctl apps list --json | jq -r ".[] | select(.name == ($APPS)) | .url")
+
+        # Set the output variable
+        echo "::set-output name=urls::$URLS"
+
+    - name: Wake up apps
+      run: |
+        for url in ${{ steps.urls.outputs.urls }}; do
+          echo "Waking up $url"
+          curl \
+            --request ${{ inputs.method }} \
+            --max-time ${{ inputs.timeout }} \
+            --user-agent "Fly Keep Awake / https://github.com/nhedger/fly-keep-awake" \
+            --verbose \
+            --url $url \
+            &
+        done
