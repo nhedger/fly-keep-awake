@@ -35,7 +35,7 @@ runs:
     - name: Wake up apps
       shell: bash
       run: |
-        for url in ${{ steps.urls.outputs.urls }}; do
+        for url in "${{ steps.urls.outputs.urls }}"; do
           echo "Waking up $url"
           curl \
             --request ${{ inputs.method }} \
