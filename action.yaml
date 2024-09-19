@@ -23,15 +23,13 @@ runs:
       shell: bash
       id: urls
       run: |
-        # Prepare the list of app names for use in jq
-        APPS=$(echo "${{ inputs.apps }}" | sed 's/[^,]\+/"&"/g')
+        # Convert the comma-separated list of app names into a JSON array
+        APPS=$(echo "${{ inputs.apps}}" | tr '\n' ',' | jq -R 'split(",") | map(select(length > 0))')
 
-        echo $APPS
-
-        flyctl apps list --json | jq -r ".[] | select(.name == ($APPS)) | .Hostname"
+        flyctl apps list --json | jq --args-json apps "$APPS" -r '.[] | select(.name == ($apps)) | .Hostname'
 
         # Retrieve the URLs of the apps
-        URLS=$(flyctl apps list --json | jq -r ".[] | select(.name == ($APPS)) | .Hostname")
+        URLS=$(flyctl apps list --json | jq --args-json apps "$APPS" -r '.[] | select(.name == ($apps)) | .Hostname')
 
         echo $URLS
 
