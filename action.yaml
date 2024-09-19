@@ -27,7 +27,7 @@ runs:
         APPS=$(echo "${{ inputs.apps }}" | sed 's/[^,]\+/"&"/g')
 
         # Retrieve the URLs of the apps
-        URLS=$(flyctl apps list --json | jq -r ".[] | select(.name == ($APPS)) | .url")
+        URLS=$(flyctl apps list --json | jq -r ".[] | select(.name == ($APPS)) | .Hostname")
 
         # Set output variable
         echo "urls=$URLS" >> $GITHUB_OUTPUT
@@ -43,6 +43,6 @@ runs:
             --max-time ${{ inputs.timeout }} \
             --user-agent "Fly Keep Awake / https://github.com/nhedger/fly-keep-awake" \
             --verbose \
-            --url $url \
+            --url "https://$url" \
             &
         done
