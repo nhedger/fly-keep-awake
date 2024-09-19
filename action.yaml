@@ -26,20 +26,14 @@ runs:
         # Convert the comma-separated list of app names into a JSON array
         APPS=$(echo "${{ inputs.apps}}" | tr '\n' ',' | jq -R 'split(",") | map(select(length > 0))')
 
-        flyctl apps list --json | jq --argjson apps "$APPS" -r '.[] | select(.Name as $name | $apps | index($name)) | .Hostname'
-
         # Retrieve the URLs of the apps
         URLS=$(flyctl apps list --json | jq --argjson apps "$APPS" -r '.[] | select(.Name as $name | $apps | index($name)) | .Hostname')
-
-        echo $URLS
 
         # Set output variable
         echo "urls<<EOF" >> $GITHUB_OUTPUT
         echo "$URLS" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
-
-        cat $GITHUB_OUTPUT
-
+      
     - name: Wake up apps
       shell: bash
       run: |
@@ -51,6 +45,6 @@ runs:
             --max-time ${{ inputs.timeout }} \
             --user-agent "Fly Keep Awake / https://github.com/nhedger/fly-keep-awake" \
             --verbose \
-            --url "https://$url" \
+            "https://$url" \
             &
         done
