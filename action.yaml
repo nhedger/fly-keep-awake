@@ -36,6 +36,8 @@ runs:
         echo "$URLS" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
 
+        cat $GITHUB_OUTPUT
+
     - name: Wake up apps
       shell: bash
       run: |
