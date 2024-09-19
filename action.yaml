@@ -39,7 +39,7 @@ runs:
           echo "Waking up $url"
           curl \
             --request ${{ inputs.method }} \
-            --head
+            --head \
             --max-time ${{ inputs.timeout }} \
             --user-agent "Fly Keep Awake / https://github.com/nhedger/fly-keep-awake" \
             --verbose \
